@@ -1,0 +1,43 @@
+import requests
+
+my_data = {
+    'from' : '/bbs/sex/index.html',
+    'yes' : 'yes' 
+}
+
+my_Headers = {
+    'user-agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.360'
+
+}
+
+r = requests.post('https://www.ptt.cc/ask/over18' , data = my_data)
+
+
+decision = input("要觀看嗎 (Y/N) ")
+while(decision == "Y"):
+    
+    import bs4
+    root = bs4.BeautifulSoup(r.text,"html.parser")
+    titles = root.find_all("div" , class_="title")
+
+    for title in titles:
+       print(title.a.string)
+
+    wides = root.find_all("a" , class_="btn wide")
+
+    sum = 0
+
+    for wide in wides:
+       sum+=1
+       if sum != 2 :
+            continue
+       else:
+            next_url = 'https://www.ptt.cc' + wide.get('href')
+            print(next_url)
+
+    decision = input("要繼續看嗎 (Y/N)")
+
+    if decision == "Y":
+        r = requests.get(next_url,Headers=my_Headers)
+else:
+    print("bye~")
